@@ -1,0 +1,94 @@
+{
+  "info": {
+    "name": "Jobify API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "List Jobs",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/jobs",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "jobs"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Get Job by ID",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/jobs/123",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "jobs",
+            "123"
+          ]
+        }
+      }
+    },
+    {
+      "name": "List Favorite Jobs",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/jobs/favorites/user123",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "jobs",
+            "favorites",
+            "user123"
+          ]
+        }
+      }
+    },
+    {
+      "name": "Toggle Favorite Job",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:3001/api/jobs/favorites",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "jobs",
+            "favorites"
+          ]
+        },
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"userId\": \"user123\",\n  \"jobId\": \"job456\",\n  \"jobData\": {\n    \"title\": \"Software Engineer\",\n    \"company\": \"Example Corp\",\n    \"description\": \"Job description here...\"\n  }\n}"
+        }
+      }
+    }
+  ]
+}
