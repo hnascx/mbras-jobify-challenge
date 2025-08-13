@@ -1,3 +1,5 @@
+"use client"
+
 import { useUserId } from "@/hooks/useUserId"
 import { ReactNode, createContext, useContext } from "react"
 
@@ -7,26 +9,18 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
-interface UserProviderProps {
-  children: ReactNode
-}
-
-export function UserProvider({ children }: UserProviderProps) {
+export function UserProvider({ children }: { children: ReactNode }) {
   const userId = useUserId()
 
   return (
-    <UserContext.Provider value={{ userId }}>
-      {userId ? children : <div>Carregando...</div>}
-    </UserContext.Provider>
+    <UserContext.Provider value={{ userId }}>{children}</UserContext.Provider>
   )
 }
 
 export function useUser() {
   const context = useContext(UserContext)
-
   if (context === undefined) {
     throw new Error("useUser must be used within a UserProvider")
   }
-
   return context
 }
