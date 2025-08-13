@@ -48,8 +48,8 @@ export function ShareButton({ title, url }: ShareButtonProps) {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Share2 className="h-4 w-4" />
+        <Button variant="outline" size="icon" aria-label="Share job">
+          <Share2 className="h-4 w-4" aria-hidden="true" />
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -58,18 +58,35 @@ export function ShareButton({ title, url }: ShareButtonProps) {
         </DialogHeader>
         <div className="space-y-4 py-4">
           <div className="flex items-center space-x-2">
-            <Input value={url} readOnly />
-            <Button variant="outline" size="icon" onClick={copyToClipboard}>
-              <Copy className="h-4 w-4" />
+            <Input value={url} readOnly aria-label="Job URL" />
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={copyToClipboard}
+              aria-label="Copy link to clipboard"
+            >
+              <Copy className="h-4 w-4" aria-hidden="true" />
             </Button>
           </div>
-          <div className="flex justify-center space-x-2">
-            <Button variant="outline" onClick={shareOnTwitter}>
-              <Twitter className="h-4 w-4 mr-2" />
+          <div
+            className="flex justify-center space-x-2"
+            role="group"
+            aria-label="Share on social media"
+          >
+            <Button
+              variant="outline"
+              onClick={shareOnTwitter}
+              aria-label="Share on Twitter"
+            >
+              <Twitter className="h-4 w-4 mr-2" aria-hidden="true" />
               Twitter
             </Button>
-            <Button variant="outline" onClick={shareOnLinkedIn}>
-              <Linkedin className="h-4 w-4 mr-2" />
+            <Button
+              variant="outline"
+              onClick={shareOnLinkedIn}
+              aria-label="Share on LinkedIn"
+            >
+              <Linkedin className="h-4 w-4 mr-2" aria-hidden="true" />
               LinkedIn
             </Button>
           </div>
