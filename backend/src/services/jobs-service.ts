@@ -13,56 +13,71 @@ interface FindAllParams {
 
 export class JobsService {
   async findAll(params: FindAllParams = {}) {
-    const response = await axios.get<JobsResponse>(REMOTIVE_API_URL)
-    const parsedData = jobsResponseSchema.safeParse(response.data)
+    try {
+      const response = await axios.get<JobsResponse>(REMOTIVE_API_URL)
+      const parsedData = jobsResponseSchema.safeParse({
+        job_count: response.data.jobs.length,
+        jobs: response.data.jobs,
+      })
 
-    if (!parsedData.success) {
-      throw new Error("Invalid API response format")
-    }
+      if (!parsedData.success) {
+        throw new Error("Invalid API response format")
+      }
 
-    let jobs = parsedData.data.jobs
+      let jobs = parsedData.data.jobs
 
-    // Apply filters
-    if (params.category) {
-      jobs = jobs.filter((job) =>
-        job.category.toLowerCase().includes(params.category!.toLowerCase())
-      )
-    }
+      // Apply filters
+      if (params.category) {
+        jobs = jobs.filter((job) =>
+          job.category?.toLowerCase().includes(params.category!.toLowerCase())
+        )
+      }
 
-    if (params.search) {
-      const searchTerm = params.search.toLowerCase()
-      jobs = jobs.filter(
-        (job) =>
-          job.title.toLowerCase().includes(searchTerm) ||
-          job.company_name.toLowerCase().includes(searchTerm) ||
-          job.description.toLowerCase().includes(searchTerm)
-      )
-    }
+      if (params.search) {
+        const searchTerm = params.search.toLowerCase()
+        jobs = jobs.filter(
+          (job) =>
+            job.title?.toLowerCase().includes(searchTerm) ||
+            job.company_name?.toLowerCase().includes(searchTerm) ||
+            job.description?.toLowerCase().includes(searchTerm)
+        )
+      }
 
-    // Apply pagination
-    const page = params.page || 1
-    const limit = params.limit || 10
-    const start = (page - 1) * limit
-    const end = start + limit
+      // Apply pagination
+      const page = params.page || 1
+      const limit = params.limit || 20
+      const start = (page - 1) * limit
+      const end = start + limit
+      const paginatedJobs = jobs.slice(start, end)
 
-    return {
-      jobs: jobs.slice(start, end),
-      total: jobs.length,
-      page,
-      limit,
-      totalPages: Math.ceil(jobs.length / limit),
+      return {
+        jobs: paginatedJobs,
+        totalJobs: jobs.length,
+        page,
+        itemsPerPage: limit,
+        totalPages: Math.ceil(jobs.length / limit),
+      }
+    } catch (error) {
+      throw error
     }
   }
 
-  async findById(id: string): Promise<Job | null> {
-    const response = await axios.get<JobsResponse>(REMOTIVE_API_URL)
-    const parsedData = jobsResponseSchema.safeParse(response.data)
+  async findById(id: number): Promise<Job | null> {
+    try {
+      const response = await axios.get<JobsResponse>(REMOTIVE_API_URL)
+      const parsedData = jobsResponseSchema.safeParse({
+        job_count: response.data.jobs.length,
+        jobs: response.data.jobs,
+      })
 
-    if (!parsedData.success) {
-      throw new Error("Invalid API response format")
+      if (!parsedData.success) {
+        throw new Error("Invalid API response format")
+      }
+
+      const job = parsedData.data.jobs.find((job) => job.id === id)
+      return job || null
+    } catch (error) {
+      throw error
     }
-
-    const job = parsedData.data.jobs.find((job) => job.id === Number(id))
-    return job || null
   }
 }

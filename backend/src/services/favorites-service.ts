@@ -1,14 +1,16 @@
 import { prisma } from "../lib/prisma"
-import { Job } from "../types/jobs"
+import { JobsService } from "./jobs-service"
 
 export class FavoritesService {
+  constructor(private jobsService = new JobsService()) {}
+
   async findByUserId(userId: string) {
     return prisma.favoriteJob.findMany({
       where: { userId },
     })
   }
 
-  async toggle(userId: string, jobId: string, jobData: Job) {
+  async toggle(userId: string, jobId: string) {
     const existingFavorite = await prisma.favoriteJob.findUnique({
       where: {
         userId_jobId: {
@@ -30,11 +32,17 @@ export class FavoritesService {
       return { favorited: false }
     }
 
+    // Fetch job data from the API
+    const job = await this.jobsService.findById(Number(jobId))
+    if (!job) {
+      throw new Error("Job not found")
+    }
+
     await prisma.favoriteJob.create({
       data: {
         userId,
         jobId,
-        jobData,
+        jobData: JSON.parse(JSON.stringify(job)), // Convert to plain object
       },
     })
 

@@ -4,7 +4,6 @@ import {
   jobIdParamSchema,
   jobsQuerySchema,
   toggleFavoriteSchema,
-  userIdParamSchema,
 } from "../schemas/validations"
 import { FavoritesService } from "../services/favorites-service"
 import { JobsService } from "../services/jobs-service"
@@ -16,14 +15,20 @@ export class JobsController {
   ) {}
 
   private handleError(error: unknown, reply: FastifyReply) {
-    console.error("Error:", error)
-
     if (error instanceof ZodError) {
       return reply.status(400).send({
         statusCode: 400,
         error: "Bad Request",
         message: "Validation error",
-        details: error.errors,
+        details: error.issues,
+      })
+    }
+
+    if (error instanceof Error && error.message === "Job not found") {
+      return reply.status(404).send({
+        statusCode: 404,
+        error: "Not Found",
+        message: "Job not found",
       })
     }
 
@@ -48,7 +53,7 @@ export class JobsController {
   async findById(request: FastifyRequest, reply: FastifyReply) {
     try {
       const { id } = jobIdParamSchema.parse(request.params)
-      const job = await this.jobsService.findById(id.toString())
+      const job = await this.jobsService.findById(id)
 
       if (!job) {
         return reply.status(404).send({
@@ -66,8 +71,7 @@ export class JobsController {
 
   async findFavorites(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const { userId } = userIdParamSchema.parse(request.params)
-      const favorites = await this.favoritesService.findByUserId(userId)
+      const favorites = await this.favoritesService.findByUserId(request.userId)
       return favorites
     } catch (error) {
       return this.handleError(error, reply)
@@ -76,12 +80,8 @@ export class JobsController {
 
   async toggleFavorite(request: FastifyRequest, reply: FastifyReply) {
     try {
-      const payload = toggleFavoriteSchema.parse(request.body)
-      const result = await this.favoritesService.toggle(
-        payload.userId,
-        payload.jobId,
-        payload.jobData
-      )
+      const { jobId } = toggleFavoriteSchema.parse(request.body)
+      const result = await this.favoritesService.toggle(request.userId, jobId)
       return result
     } catch (error) {
       return this.handleError(error, reply)

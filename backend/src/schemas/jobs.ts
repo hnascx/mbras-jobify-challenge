@@ -1,25 +1,35 @@
 import { z } from "zod"
 
 export const jobSchema = z.object({
-  id: z.number(),
-  url: z.string().url(),
-  title: z.string(),
-  company_name: z.string(),
-  company_logo: z.string().url(),
-  category: z.string(),
-  tags: z.array(z.string()),
-  job_type: z.string(),
-  publication_date: z.string(),
-  candidate_required_location: z.string(),
-  salary: z.string(),
-  description: z.string(),
+  id: z.union([z.number(), z.string()]).transform((val) => Number(val)),
+  url: z.string().optional(),
+  title: z.string().optional(),
+  company_name: z.string().optional(),
+  company_logo: z.string().optional(),
+  category: z.string().optional(),
+  tags: z.array(z.string()).optional(),
+  job_type: z.string().optional(),
+  publication_date: z.string().optional(),
+  candidate_required_location: z.string().optional(),
+  salary: z.string().optional(),
+  description: z.string().optional(),
 })
 
-export const jobsResponseSchema = z.object({
-  "job-count": z.number(),
-  "total-job-count": z.number().optional(),
-  jobs: z.array(jobSchema),
-})
+export const jobsResponseSchema = z
+  .object({
+    job_count: z.number(),
+    jobs: z.array(jobSchema),
+  })
+  .or(
+    z
+      .object({
+        jobs: z.array(jobSchema),
+      })
+      .transform((data) => ({
+        job_count: data.jobs.length,
+        jobs: data.jobs,
+      }))
+  )
 
 export const favoriteJobParamsSchema = z.object({
   userId: z.string().min(1, "User ID is required"),

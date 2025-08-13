@@ -1,21 +1,36 @@
 import cors from "@fastify/cors"
 import fastify from "fastify"
-import { env } from "./config/env"
 import { jobRoutes } from "./routes/jobs"
 
-const app = fastify()
+export async function createServer() {
+  const app = fastify()
 
-app.register(cors, {
-  origin: env.FRONTEND_URL,
-})
-
-app.register(jobRoutes, { prefix: "/api/jobs" })
-
-app
-  .listen({
-    port: Number(env.PORT),
-    host: env.HOST,
+  await app.register(cors, {
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
   })
-  .then(() => {
-    console.log(`🚀 HTTP server running on http://localhost:${env.PORT}`)
-  })
+
+  await app.register(jobRoutes, { prefix: "/api" })
+
+  return app
+}
+
+async function start() {
+  const app = await createServer()
+
+  try {
+    await app.listen({
+      port: Number(process.env.PORT) || 3001,
+      host: "0.0.0.0",
+    })
+    console.log(
+      `🚀 HTTP server running on http://localhost:${process.env.PORT || 3001}`
+    )
+  } catch (err) {
+    app.log.error(err)
+    process.exit(1)
+  }
+}
+
+if (require.main === module) {
+  start()
+}
