@@ -11,32 +11,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { useUser } from "@/contexts/UserContext"
 import { useDebounce } from "@/hooks/useDebounce"
-import { api } from "@/lib/api"
-import { useCallback, useEffect, useState } from "react"
-import { toast } from "sonner"
+import { useFavoriteJobs, useToggleFavorite } from "@/hooks/useFavoriteJobs"
+import { useJobs } from "@/hooks/useJobs"
+import { useUserId } from "@/hooks/useUserId"
+import { useSearchParams } from "next/navigation"
+import { useState } from "react"
 
-interface Job {
-  id: number
-  title: string
-  company_name: string
-  company_logo?: string
-  category: string
-  candidate_required_location: string
-  description: string
-}
-
-interface FavoriteJob {
-  jobId: string
-}
-
-interface CategoryOption {
-  value: string
-  label: string
-}
-
-const categoryOptions: CategoryOption[] = [
+const categoryOptions = [
   { value: "all", label: "Todas as categorias" },
   { value: "software_development", label: "Desenvolvimento de Software" },
   { value: "design", label: "Design" },
@@ -54,80 +36,23 @@ const categoryOptions: CategoryOption[] = [
 ]
 
 export default function Home() {
-  const { userId } = useUser()
-  const [jobs, setJobs] = useState<Job[]>([])
-  const [search, setSearch] = useState("")
-  const [category, setCategory] = useState("all")
-  const [isLoading, setIsLoading] = useState(true)
-  const [favoritedJobIds, setFavoritedJobIds] = useState<Set<string>>(new Set())
+  const searchParams = useSearchParams()
+  const userId = useUserId()
+  const [search, setSearch] = useState(searchParams.get("search") || "")
+  const [category, setCategory] = useState(
+    searchParams.get("category") || "all"
+  )
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemsPerPage] = useState(20)
-  const [totalJobs, setTotalJobs] = useState(0)
+  const [itemsPerPage] = useState(20)
 
   const debouncedSearch = useDebounce(search)
 
-  const loadJobs = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      const params = new URLSearchParams()
-      if (debouncedSearch) params.append("search", debouncedSearch)
-      if (category && category !== "all") params.append("category", category)
-      params.append("page", currentPage.toString())
-      params.append("limit", itemsPerPage.toString())
-
-      const response = await api.get(`/jobs?${params.toString()}`)
-      setJobs(response.data.jobs)
-      setTotalJobs(response.data.totalJobs)
-    } catch (error) {
-      console.error("Error loading jobs:", error)
-      toast.error("Failed to load jobs")
-    } finally {
-      setIsLoading(false)
-    }
-  }, [debouncedSearch, category, currentPage, itemsPerPage])
-
-  const loadFavorites = useCallback(async () => {
-    if (!userId) return
-
-    try {
-      const response = await api.get<FavoriteJob[]>("/favorited-jobs")
-      const favoriteIds = new Set(
-        response.data.map((fav) => fav.jobId)
-      ) as Set<string>
-      setFavoritedJobIds(favoriteIds)
-    } catch (error) {
-      console.error("Erro ao carregar favoritos:", error)
-      toast.error("Falha ao carregar favoritos")
-    }
-  }, [userId])
+  const { data, isLoading } = useJobs(currentPage, category, debouncedSearch)
+  const { data: favoriteJobs = [] } = useFavoriteJobs(userId)
+  const toggleFavorite = useToggleFavorite(userId)
 
   const handleFavoriteToggle = async (jobId: number) => {
-    if (!userId) return
-
-    const isFavorited = favoritedJobIds.has(jobId.toString())
-    const job = jobs.find((j) => j.id === jobId)
-    if (!job) return
-
-    try {
-      await api.post("/favorited-jobs/toggle", { jobId: jobId.toString() })
-      setFavoritedJobIds((prev) => {
-        const next = new Set(prev)
-        if (next.has(jobId.toString())) {
-          next.delete(jobId.toString())
-        } else {
-          next.add(jobId.toString())
-        }
-        return next
-      })
-      toast.success(
-        isFavorited
-          ? `Vaga removida dos favoritos`
-          : `Vaga adicionada aos favoritos`
-      )
-    } catch (error) {
-      console.error("Erro ao atualizar status de favorito:", error)
-      toast.error("Falha ao atualizar status de favorito")
-    }
+    await toggleFavorite.mutateAsync(jobId.toString())
   }
 
   const handlePageChange = (page: number) => {
@@ -136,38 +61,29 @@ export default function Home() {
   }
 
   const handleItemsPerPageChange = (items: number) => {
-    setItemsPerPage(items)
-    setCurrentPage(1)
+    // Mantido para compatibilidade com o componente Pagination
   }
-
-  useEffect(() => {
-    loadJobs()
-  }, [loadJobs])
-
-  useEffect(() => {
-    loadFavorites()
-  }, [loadFavorites])
-
-  // Reset to first page when search or category changes
-  useEffect(() => {
-    setCurrentPage(1)
-  }, [debouncedSearch, category])
 
   return (
     <div className="space-y-7">
-      {/* Filtros sempre visíveis */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div
+        className="flex flex-col sm:flex-row gap-4"
+        role="search"
+        aria-label="Filtrar vagas"
+      >
         <Input
           placeholder="Buscar vagas..."
           className="flex-1 focus-visible:ring-1"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          disabled={isLoading}
+          type="search"
+          aria-label="Buscar vagas por palavra-chave"
         />
         <Select
           value={category}
           onValueChange={setCategory}
-          disabled={isLoading}
+          name="category"
+          aria-label="Filtrar por categoria"
         >
           <SelectTrigger className="w-full sm:w-[250px] focus-visible:ring-1">
             <SelectValue placeholder="Categoria" />
@@ -182,39 +98,49 @@ export default function Home() {
         </Select>
       </div>
 
-      {/* Conteúdo condicional */}
       {isLoading ? (
-        <JobSkeleton />
-      ) : jobs.length > 0 ? (
+        <div aria-live="polite" aria-busy="true">
+          <JobSkeleton />
+        </div>
+      ) : data?.jobs.length ? (
         <>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {jobs.map((job) => (
+          <div
+            className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+            role="feed"
+            aria-label="Lista de vagas"
+            aria-busy={isLoading}
+          >
+            {data.jobs.map((job) => (
               <JobCard
                 key={job.id}
                 id={job.id}
                 title={job.title}
                 companyName={job.company_name}
-                companyLogo={job.company_logo}
+                companyLogo={job.company_logo || undefined}
                 category={job.category}
                 location={job.candidate_required_location}
                 description={job.description}
-                isFavorited={favoritedJobIds.has(job.id.toString())}
+                isFavorited={favoriteJobs.some(
+                  (fav) => fav.jobId === job.id.toString()
+                )}
                 onFavoriteClick={() => handleFavoriteToggle(job.id)}
               />
             ))}
           </div>
 
-          <Pagination
-            currentPage={currentPage}
-            totalPages={Math.ceil(totalJobs / itemsPerPage)}
-            itemsPerPage={itemsPerPage}
-            totalItems={totalJobs}
-            onPageChange={handlePageChange}
-            onItemsPerPageChange={handleItemsPerPageChange}
-          />
+          <nav aria-label="Paginação">
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil((data?.totalJobs || 0) / itemsPerPage)}
+              itemsPerPage={itemsPerPage}
+              totalItems={data?.totalJobs || 0}
+              onPageChange={handlePageChange}
+              onItemsPerPageChange={handleItemsPerPageChange}
+            />
+          </nav>
         </>
       ) : (
-        <div className="text-center py-8">
+        <div className="text-center py-8" role="status" aria-live="polite">
           <p className="text-lg text-muted-foreground">
             Nenhuma vaga encontrada. Tente ajustar sua busca ou filtros.
           </p>

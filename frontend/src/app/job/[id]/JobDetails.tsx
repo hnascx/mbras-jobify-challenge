@@ -28,6 +28,7 @@ interface JobDetailsProps {
   description: string
   salary?: string
   publicationDate: string
+  url: string
   isFavorited: boolean
   onFavoriteClick: () => void
 }
@@ -43,6 +44,7 @@ export function JobDetails({
   description,
   salary,
   publicationDate,
+  url,
   isFavorited,
   onFavoriteClick,
 }: JobDetailsProps) {
@@ -153,7 +155,9 @@ export function JobDetails({
               <Button
                 size="lg"
                 className="flex-1 bg-green-400 hover:bg-green-500 text-black font-semibold transition-colors duration-200 cursor-pointer"
-                onClick={() => window.open(window.location.href, "_blank")}
+                onClick={() =>
+                  window.open(url, "_blank", "noopener,noreferrer")
+                }
               >
                 Candidatar-se
               </Button>

@@ -102,7 +102,7 @@ export function JobCard({
   isFavorited,
   onFavoriteClick,
 }: JobCardProps) {
-  const [isLoadingFavorite, setIsLoadingFavorite] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
   const cleanDescription = description ? stripHtml(description) : ""
@@ -112,13 +112,12 @@ export function JobCard({
   const translatedCategory = translateCategory(category)
   const categoryColors = getCategoryColor(category)
 
-  const handleFavoriteClick = async (e: React.MouseEvent) => {
-    e.preventDefault()
+  const handleFavoriteClick = async () => {
     try {
-      setIsLoadingFavorite(true)
+      setIsLoading(true)
       await onFavoriteClick()
     } finally {
-      setIsLoadingFavorite(false)
+      setIsLoading(false)
     }
   }
 
@@ -143,7 +142,7 @@ export function JobCard({
             <Link
               href={`/job/${id}`}
               className="block"
-              aria-label={`View ${stripHtml(companyName)} logo`}
+              aria-label={`Ver logo da empresa ${stripHtml(companyName)}`}
             >
               <div className="relative w-12 h-12 shrink-0 bg-muted rounded-lg overflow-hidden">
                 {companyLogo ? (
@@ -156,7 +155,10 @@ export function JobCard({
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center text-muted-foreground text-lg font-medium">
-                    <Building2 className="w-12 h-12 p-3 border-1 rounded-lg" />
+                    <Building2
+                      className="w-12 h-12 p-3 border-1 rounded-lg"
+                      aria-hidden="true"
+                    />
                   </div>
                 )}
               </div>
@@ -165,20 +167,22 @@ export function JobCard({
               <Link
                 href={`/job/${id}`}
                 className="inline-block max-w-[85%]"
-                aria-label={`View details for ${stripHtml(
+                aria-label={`Ver detalhes da vaga ${stripHtml(
                   title
-                )} at ${stripHtml(companyName)}`}
+                )} na empresa ${stripHtml(companyName)}`}
               >
                 <span className="font-medium truncate hover:text-gray-300 transition-colors duration-200 block">
                   {stripHtml(companyName)}
                 </span>
               </Link>
               <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                <MapPin className="h-3 w-3 shrink-0" />
+                <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
                 <Link
                   href={`/job/${id}`}
                   className="inline-block"
-                  aria-label={`View details for ${stripHtml(title)} location`}
+                  aria-label={`Ver detalhes da localização: ${stripHtml(
+                    location
+                  )}`}
                 >
                   <span
                     className="truncate hover:text-gray-300 transition-colors duration-200"
@@ -195,15 +199,15 @@ export function JobCard({
             size="icon"
             onClick={handleFavoriteClick}
             className="shrink-0 ml-2 cursor-pointer"
-            disabled={isLoadingFavorite}
+            disabled={isLoading}
             aria-label={
               isFavorited
-                ? `Remove ${stripHtml(title)} from favorites`
-                : `Add ${stripHtml(title)} to favorites`
+                ? `Remover ${stripHtml(title)} dos favoritos`
+                : `Adicionar ${stripHtml(title)} aos favoritos`
             }
             aria-pressed={isFavorited}
           >
-            {isLoadingFavorite ? (
+            {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
             ) : (
               <Heart
@@ -223,9 +227,9 @@ export function JobCard({
             id={`job-title-${id}`}
             className="inline-block max-w-full"
             title={title}
-            aria-label={`View details for ${stripHtml(title)} at ${stripHtml(
-              companyName
-            )}`}
+            aria-label={`Ver detalhes da vaga ${stripHtml(
+              title
+            )} na empresa ${stripHtml(companyName)}`}
           >
             <span className="text-lg font-semibold truncate hover:text-gray-300 transition-colors duration-200 block">
               {titlePreview}
@@ -235,7 +239,7 @@ export function JobCard({
           <Link
             href={`/job/${id}`}
             className="inline-block"
-            aria-label={`Read more about ${stripHtml(title)}`}
+            aria-label={`Ler mais sobre a vaga ${stripHtml(title)}`}
           >
             <p className="text-sm text-muted-foreground line-clamp-3 hover:text-gray-300 transition-colors duration-200">
               {descriptionPreview}
@@ -245,12 +249,12 @@ export function JobCard({
           <div
             className="flex flex-wrap gap-2"
             role="list"
-            aria-label="Job details"
+            aria-label="Detalhes da vaga"
           >
             <Badge
               variant="outline"
               role="listitem"
-              aria-label={`Category: ${translatedCategory}`}
+              aria-label={`Categoria: ${translatedCategory}`}
               className={`${categoryColors.text} ${categoryColors.border} ${categoryColors.bg}`}
             >
               {translatedCategory}

@@ -1,85 +1,23 @@
 "use client"
 
 import { JobDetailsSkeleton } from "@/components/JobDetailsSkeleton"
+import { useFavoriteJobs, useToggleFavorite } from "@/hooks/useFavoriteJobs"
+import { useJob } from "@/hooks/useJob"
 import { useUserId } from "@/hooks/useUserId"
-import { api } from "@/lib/api"
 import { useParams } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import { toast } from "sonner"
 import { JobDetails } from "./JobDetails"
-
-interface Job {
-  id: number
-  title: string
-  company_name: string
-  company_logo: string | null
-  category: string
-  candidate_required_location: string
-  job_type: string
-  description: string
-  salary: string | null
-  publication_date: string
-}
 
 export default function JobPage() {
   const params = useParams()
   const id = params.id as string
   const userId = useUserId()
-  const [job, setJob] = useState<Job | null>(null)
-  const [isFavorited, setIsFavorited] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [isError, setIsError] = useState(false)
 
-  const fetchJob = useCallback(async () => {
-    try {
-      setIsLoading(true)
-      setIsError(false)
-
-      const [jobResponse, favoriteResponse] = await Promise.all([
-        api.get(`/job/${id}`),
-        userId
-          ? api.get(`/favorited-jobs`, {
-              headers: { "X-User-Id": userId },
-            })
-          : Promise.resolve({ data: [] }),
-      ])
-
-      setJob(jobResponse.data)
-      setIsFavorited(
-        favoriteResponse.data.some((fav: { jobId: string }) => fav.jobId === id)
-      )
-    } catch (error) {
-      console.error(error)
-      setIsError(true)
-      toast.error("Erro ao carregar vaga")
-    } finally {
-      setIsLoading(false)
-    }
-  }, [id, userId])
-
-  useEffect(() => {
-    fetchJob()
-  }, [fetchJob])
+  const { data: job, isLoading, isError } = useJob(id)
+  const { data: favoriteJobs = [] } = useFavoriteJobs(userId)
+  const toggleFavorite = useToggleFavorite(userId)
 
   const handleFavoriteClick = async () => {
-    if (!userId) return
-
-    try {
-      const response = await api.post(
-        "/favorited-jobs/toggle",
-        { jobId: id },
-        { headers: { "X-User-Id": userId } }
-      )
-      setIsFavorited(response.data.isFavorited)
-      toast.success(
-        response.data.isFavorited
-          ? "Vaga adicionada aos favoritos"
-          : "Vaga removida dos favoritos"
-      )
-    } catch (error) {
-      console.error(error)
-      toast.error("Erro ao favoritar vaga")
-    }
+    await toggleFavorite.mutateAsync(id)
   }
 
   if (isLoading) {
@@ -97,6 +35,8 @@ export default function JobPage() {
     )
   }
 
+  const isFavorited = favoriteJobs.some((fav) => fav.jobId === id)
+
   return (
     <JobDetails
       id={job.id}
@@ -109,6 +49,7 @@ export default function JobPage() {
       description={job.description}
       salary={job.salary || undefined}
       publicationDate={job.publication_date}
+      url={job.url}
       isFavorited={isFavorited}
       onFavoriteClick={handleFavoriteClick}
     />
