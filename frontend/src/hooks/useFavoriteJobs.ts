@@ -1,11 +1,8 @@
 import { api } from "@/lib/api"
 import { queryClient } from "@/lib/query"
+import { FavoriteJob } from "@/types/favorites"
 import { useMutation, useQuery } from "@tanstack/react-query"
 import { toast } from "sonner"
-
-interface FavoriteJob {
-  jobId: string
-}
 
 interface ToggleResponse {
   isFavorited: boolean

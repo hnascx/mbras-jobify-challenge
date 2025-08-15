@@ -27,7 +27,7 @@ export default function JobPage() {
   if (isError || !job) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[calc(100vh-6rem)]">
-        <h1 className="text-2xl font-bold mb-4">Vaga não encontrada</h1>
+        <h1 className="text-2xl font-bold mb-4">Vaga não encontrada :(</h1>
         <p className="text-muted-foreground">
           A vaga que você está procurando não existe ou foi removida.
         </p>

@@ -29,7 +29,7 @@ export class FavoritesService {
           },
         },
       })
-      return { favorited: false }
+      return { isFavorited: false }
     }
 
     // Fetch job data from the API
@@ -42,10 +42,10 @@ export class FavoritesService {
       data: {
         userId,
         jobId,
-        jobData: JSON.parse(JSON.stringify(job)), // Convert to plain object
+        jobData: JSON.parse(JSON.stringify(job)),
       },
     })
 
-    return { favorited: true }
+    return { isFavorited: true }
   }
 }

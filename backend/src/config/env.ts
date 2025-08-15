@@ -1,8 +1,12 @@
 import "dotenv/config"
+import { z } from "zod"
 
-export const env = {
-  DATABASE_URL: process.env.DATABASE_URL,
-  PORT: process.env.PORT,
-  HOST: process.env.HOST || "0.0.0.0",
-  FRONTEND_URL: process.env.FRONTEND_URL,
-} as const
+const envSchema = z.object({
+  PORT: z.coerce.number().default(3001),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
+  DATABASE_URL: z.string(),
+})
+
+export const env = envSchema.parse(process.env)
