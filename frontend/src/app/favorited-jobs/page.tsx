@@ -30,8 +30,8 @@ export default function FavoritedJobs() {
       const response = await api.get("/favorited-jobs")
       setFavorites(response.data)
     } catch (error) {
-      console.error("Error loading favorites:", error)
-      toast.error("Failed to load favorite jobs")
+      console.error("Erro ao carregar favoritos:", error)
+      toast.error("Falha ao carregar favoritos")
     } finally {
       setIsLoading(false)
     }
@@ -44,10 +44,10 @@ export default function FavoritedJobs() {
 
       await api.post("/favorited-jobs/toggle", { jobId })
       setFavorites((prev) => prev.filter((fav) => fav.jobId !== jobId))
-      toast.success(`Removed ${job.jobData.title} from favorites`)
+      toast.success(`Vaga removida dos favoritos`)
     } catch (error) {
-      console.error("Error unfavoriting job:", error)
-      toast.error("Failed to remove job from favorites")
+      console.error("Erro ao remover vaga dos favoritos:", error)
+      toast.error("Falha ao remover vaga dos favoritos")
     }
   }
 
@@ -61,9 +61,9 @@ export default function FavoritedJobs() {
     return (
       <Card className="p-6">
         <div className="text-center space-y-2">
-          <h2 className="text-lg font-semibold">No User ID Found</h2>
+          <h2 className="text-lg font-semibold">ID do usuário não encontrado</h2>
           <p className="text-muted-foreground">
-            Please refresh the page to generate a user ID.
+            Por favor, atualize a página para gerar um ID de usuário.
           </p>
         </div>
       </Card>
@@ -94,9 +94,9 @@ export default function FavoritedJobs() {
     return (
       <Card className="p-6">
         <div className="text-center space-y-2">
-          <h2 className="text-lg font-semibold">No Favorited Jobs</h2>
+          <h2 className="text-lg font-semibold">Nenhuma vaga favoritada</h2>
           <p className="text-muted-foreground">
-            Jobs you favorite will appear here. Go browse some jobs!
+            As vagas que você favoritar aparecerão aqui. Vá explorar algumas vagas!
           </p>
         </div>
       </Card>
@@ -105,7 +105,7 @@ export default function FavoritedJobs() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-2xl font-bold">Favorited Jobs</h1>
+      <h1 className="text-2xl font-bold">Vagas favoritadas</h1>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {favorites.map((favorite) => (
           <JobCard

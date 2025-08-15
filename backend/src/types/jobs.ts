@@ -23,3 +23,4 @@ export interface FavoriteJobData {
   jobId: string
   jobData: Job
 }
+ 

@@ -38,10 +38,10 @@ export function ScrollToTop() {
     <Button
       variant="outline"
       size="icon"
-      className="fixed bottom-4 right-4 z-50"
+      className="fixed bottom-4 right-4 z-50 bg-green-400 hover:bg-green-500 transition-colors duration-200 cursor-pointer"
       onClick={scrollToTop}
     >
-      <ArrowUp className="h-4 w-4" />
+      <ArrowUp className="h-4 w-4 text-black" />
     </Button>
   )
 }

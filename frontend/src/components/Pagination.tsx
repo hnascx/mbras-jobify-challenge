@@ -2,13 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
   ChevronLeft,
   ChevronRight,
   ChevronsLeft,
@@ -38,67 +31,57 @@ export function Pagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
       <div className="text-sm text-muted-foreground">
-        Showing{" "}
+        Exibindo{" "}
         <span className="font-medium text-foreground">
-          {startItem} to {endItem}
+          vagas de {startItem} a {endItem}
         </span>{" "}
-        of <span className="font-medium text-foreground">{totalItems}</span>{" "}
-        results
+        <span className="font-medium text-foreground">
+          ({totalItems} resultados)
+        </span>{" "}
       </div>
 
       <div className="flex items-center space-x-2">
         <div className="flex items-center space-x-2">
           <Button
             variant="outline"
+            className="border-green-400 cursor-pointer hover:border-green-500 transition-colors duration-200"
             size="icon"
             onClick={() => onPageChange(1)}
             disabled={currentPage === 1}
           >
-            <ChevronsLeft className="h-4 w-4" />
+            <ChevronsLeft className="h-4 w-4 text-green-400 hover:text-green-500 transition-colors duration-200" />
           </Button>
           <Button
             variant="outline"
+            className="border-green-400 cursor-pointer hover:border-green-500 transition-colors duration-200"
             size="icon"
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-4 w-4 text-green-400 hover:text-green-500 transition-colors duration-200" />
           </Button>
           <span className="text-sm">
-            Page {currentPage} of {totalPages}
+            Página {currentPage} de {totalPages}
           </span>
           <Button
             variant="outline"
+            className="border-green-400 cursor-pointer hover:border-green-500 transition-colors duration-200"
             size="icon"
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-4 w-4 text-green-400 hover:text-green-500 transition-colors duration-200" />
           </Button>
           <Button
             variant="outline"
+            className="border-green-400 cursor-pointer hover:border-green-500 transition-colors duration-200"
             size="icon"
             onClick={() => onPageChange(totalPages)}
             disabled={currentPage === totalPages}
           >
-            <ChevronsRight className="h-4 w-4" />
+            <ChevronsRight className="h-4 w-4 text-green-400 hover:text-green-500 transition-colors duration-200" />
           </Button>
         </div>
-
-        <Select
-          value={itemsPerPage.toString()}
-          onValueChange={(value) => onItemsPerPageChange(Number(value))}
-        >
-          <SelectTrigger className="w-[110px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="10">10 per page</SelectItem>
-            <SelectItem value="20">20 per page</SelectItem>
-            <SelectItem value="30">30 per page</SelectItem>
-            <SelectItem value="50">50 per page</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
     </div>
   )

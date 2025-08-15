@@ -1,7 +1,16 @@
 import type { NextConfig } from "next"
 
-const nextConfig: NextConfig = {
+const config: NextConfig = {
   devIndicators: false,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "remotive.com",
+        pathname: "**",
+      },
+    ],
+  },
 }
 
-export default nextConfig
+export default config

@@ -1,6 +1,7 @@
 "use client"
 
 import { JobCard } from "@/components/JobCard"
+import { JobSkeleton } from "@/components/JobSkeleton"
 import { Pagination } from "@/components/Pagination"
 import { Input } from "@/components/ui/input"
 import {
@@ -20,10 +21,37 @@ interface Job {
   id: number
   title: string
   company_name: string
+  company_logo?: string
   category: string
   candidate_required_location: string
-  job_type: string
+  description: string
 }
+
+interface FavoriteJob {
+  jobId: string
+}
+
+interface CategoryOption {
+  value: string
+  label: string
+}
+
+const categoryOptions: CategoryOption[] = [
+  { value: "all", label: "Todas as categorias" },
+  { value: "software_development", label: "Desenvolvimento de Software" },
+  { value: "design", label: "Design" },
+  { value: "marketing", label: "Marketing" },
+  { value: "sales", label: "Vendas/Negócios" },
+  { value: "customer_service", label: "Atendimento ao Cliente" },
+  { value: "product", label: "Produto" },
+  { value: "data", label: "Dados" },
+  { value: "devops", label: "DevOps" },
+  { value: "finance", label: "Financeiro/Jurídico" },
+  { value: "hr", label: "Recursos Humanos" },
+  { value: "qa", label: "QA" },
+  { value: "writing", label: "Escrita" },
+  { value: "other", label: "Outras categorias" },
+]
 
 export default function Home() {
   const { userId } = useUser()
@@ -62,12 +90,14 @@ export default function Home() {
     if (!userId) return
 
     try {
-      const response = await api.get("/favorited-jobs")
-      const favoriteIds = new Set(response.data.map((fav: any) => fav.jobId))
+      const response = await api.get<FavoriteJob[]>("/favorited-jobs")
+      const favoriteIds = new Set(
+        response.data.map((fav) => fav.jobId)
+      ) as Set<string>
       setFavoritedJobIds(favoriteIds)
     } catch (error) {
-      console.error("Error loading favorites:", error)
-      toast.error("Failed to load favorite jobs")
+      console.error("Erro ao carregar favoritos:", error)
+      toast.error("Falha ao carregar favoritos")
     }
   }, [userId])
 
@@ -91,12 +121,12 @@ export default function Home() {
       })
       toast.success(
         isFavorited
-          ? `Removed ${job.title} from favorites`
-          : `Added ${job.title} to favorites`
+          ? `Vaga removida dos favoritos`
+          : `Vaga adicionada aos favoritos`
       )
     } catch (error) {
-      console.error("Error toggling favorite:", error)
-      toast.error("Failed to update favorite status")
+      console.error("Erro ao atualizar status de favorito:", error)
+      toast.error("Falha ao atualizar status de favorito")
     }
   }
 
@@ -124,76 +154,71 @@ export default function Home() {
   }, [debouncedSearch, category])
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-7">
+      {/* Filtros sempre visíveis */}
       <div className="flex flex-col sm:flex-row gap-4">
         <Input
-          placeholder="Search jobs..."
-          className="flex-1"
+          placeholder="Buscar vagas..."
+          className="flex-1 focus-visible:ring-1"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
+          disabled={isLoading}
         />
-        <Select value={category} onValueChange={setCategory}>
-          <SelectTrigger className="w-full sm:w-[180px]">
-            <SelectValue placeholder="Category" />
+        <Select
+          value={category}
+          onValueChange={setCategory}
+          disabled={isLoading}
+        >
+          <SelectTrigger className="w-full sm:w-[250px] focus-visible:ring-1">
+            <SelectValue placeholder="Categoria" />
           </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            <SelectItem value="frontend">Frontend</SelectItem>
-            <SelectItem value="backend">Backend</SelectItem>
-            <SelectItem value="fullstack">Fullstack</SelectItem>
-            <SelectItem value="mobile">Mobile</SelectItem>
-            <SelectItem value="devops">DevOps</SelectItem>
+          <SelectContent className="backdrop-blur-none">
+            {categoryOptions.map((option) => (
+              <SelectItem key={option.value} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {isLoading ? (
-          Array.from({ length: itemsPerPage }).map((_, i) => (
-            <div
-              key={i}
-              className="space-y-4 p-6 border rounded-lg animate-pulse"
-            >
-              <div className="h-4 bg-muted rounded w-3/4"></div>
-              <div className="h-3 bg-muted rounded w-1/2"></div>
-              <div className="flex gap-2">
-                <div className="h-6 bg-muted rounded w-20"></div>
-                <div className="h-6 bg-muted rounded w-20"></div>
-              </div>
-            </div>
-          ))
-        ) : jobs.length > 0 ? (
-          jobs.map((job) => (
-            <JobCard
-              key={job.id}
-              id={job.id}
-              title={job.title}
-              companyName={job.company_name}
-              category={job.category}
-              location={job.candidate_required_location}
-              type={job.job_type}
-              isFavorited={favoritedJobIds.has(job.id.toString())}
-              onFavoriteClick={() => handleFavoriteToggle(job.id)}
-            />
-          ))
-        ) : (
-          <div className="col-span-full text-center py-8">
-            <p className="text-lg text-muted-foreground">
-              No jobs found. Try adjusting your search or filters.
-            </p>
+      {/* Conteúdo condicional */}
+      {isLoading ? (
+        <JobSkeleton />
+      ) : jobs.length > 0 ? (
+        <>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {jobs.map((job) => (
+              <JobCard
+                key={job.id}
+                id={job.id}
+                title={job.title}
+                companyName={job.company_name}
+                companyLogo={job.company_logo}
+                category={job.category}
+                location={job.candidate_required_location}
+                description={job.description}
+                isFavorited={favoritedJobIds.has(job.id.toString())}
+                onFavoriteClick={() => handleFavoriteToggle(job.id)}
+              />
+            ))}
           </div>
-        )}
-      </div>
 
-      {!isLoading && jobs.length > 0 && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={Math.ceil(totalJobs / itemsPerPage)}
-          itemsPerPage={itemsPerPage}
-          totalItems={totalJobs}
-          onPageChange={handlePageChange}
-          onItemsPerPageChange={handleItemsPerPageChange}
-        />
+          <Pagination
+            currentPage={currentPage}
+            totalPages={Math.ceil(totalJobs / itemsPerPage)}
+            itemsPerPage={itemsPerPage}
+            totalItems={totalJobs}
+            onPageChange={handlePageChange}
+            onItemsPerPageChange={handleItemsPerPageChange}
+          />
+        </>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-lg text-muted-foreground">
+            Nenhuma vaga encontrada. Tente ajustar sua busca ou filtros.
+          </p>
+        </div>
       )}
     </div>
   )

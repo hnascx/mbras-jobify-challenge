@@ -27,10 +27,27 @@ export class JobsService {
       let jobs = parsedData.data.jobs
 
       // Apply filters
-      if (params.category) {
-        jobs = jobs.filter((job) =>
-          job.category?.toLowerCase().includes(params.category!.toLowerCase())
-        )
+      if (params.category && params.category !== "all") {
+        const categoryMap: { [key: string]: string } = {
+          software_development: "Software Development",
+          design: "Design",
+          marketing: "Marketing",
+          sales: "Sales / Business",
+          customer_service: "Customer Service",
+          product: "Product",
+          data: "Data Analysis",
+          devops: "DevOps / Sysadmin",
+          finance: "Finance / Legal",
+          hr: "Human Resources",
+          qa: "QA",
+          writing: "Writing",
+          other: "All others",
+        }
+
+        const categoryToFilter = categoryMap[params.category]
+        if (categoryToFilter) {
+          jobs = jobs.filter((job) => job.category === categoryToFilter)
+        }
       }
 
       if (params.search) {

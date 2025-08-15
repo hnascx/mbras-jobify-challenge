@@ -9,11 +9,11 @@ import "./globals.css"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
-  title: "Jobify - Find Your Next Remote Job",
-  description: "Find and favorite remote jobs in tech.",
+  title: "Jobify - Encontre seu próximo emprego remoto",
+  description: "Encontre e salve vagas de emprego remoto.",
   openGraph: {
-    title: "Jobify - Find Your Next Remote Job",
-    description: "Find and favorite remote jobs in tech.",
+    title: "Jobify - Encontre seu próximo emprego remoto",
+    description: "Encontre e salve vagas de emprego remoto.",
     url: "https://jobify.vercel.app",
     siteName: "Jobify",
     images: [
@@ -28,8 +28,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Jobify - Find Your Next Remote Job",
-    description: "Find and favorite remote jobs in tech.",
+    title: "Jobify - Encontre seu próximo emprego remoto",
+    description: "Encontre e salve vagas de emprego remoto.",
     images: ["https://jobify.vercel.app/og-image.png"],
   },
   robots: {
@@ -42,9 +42,6 @@ export const metadata: Metadata = {
       "max-image-preview": "large",
       "max-snippet": -1,
     },
-  },
-  icons: {
-    shortcut: "/favicon.ico",
   },
 }
 
@@ -59,7 +56,7 @@ export default function RootLayout({
         <UserProvider>
           <div className="min-h-screen flex flex-col">
             <Header />
-            <main className="flex-1 container mx-auto px-4 py-8">
+            <main className="flex-1 container mx-auto px-10 py-8">
               {children}
             </main>
           </div>

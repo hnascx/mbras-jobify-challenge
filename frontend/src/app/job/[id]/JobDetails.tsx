@@ -1,243 +1,193 @@
 "use client"
 
-import { JobSkeleton } from "@/components/JobSkeleton"
-import { PageTransition } from "@/components/PageTransition"
 import { ShareButton } from "@/components/ShareButton"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
-import { useUser } from "@/contexts/UserContext"
-import { api } from "@/lib/api"
-import { ArrowLeft } from "lucide-react"
+import { translateJobType } from "@/lib/utils"
+import { format, parseISO } from "date-fns"
+import { ptBR } from "date-fns/locale"
+import {
+  ArrowLeft,
+  Building2,
+  Calendar,
+  Heart,
+  MapPin,
+  Timer,
+} from "lucide-react"
+import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { useCallback, useEffect, useState } from "react"
-import { toast } from "sonner"
-
-interface Job {
-  id: number
-  title: string
-  company_name: string
-  company_logo: string | null
-  category: string
-  candidate_required_location: string
-  job_type: string
-  salary: string
-  description: string
-  url: string
-}
+import { useMemo } from "react"
 
 interface JobDetailsProps {
-  id: string
+  id: number
+  title: string
+  companyName: string
+  companyLogo?: string
+  category: string
+  location: string
+  type: string
+  description: string
+  salary?: string
+  publicationDate: string
+  isFavorited: boolean
+  onFavoriteClick: () => void
 }
 
-export function JobDetails({ id }: JobDetailsProps) {
+export function JobDetails({
+  id,
+  title,
+  companyName,
+  companyLogo,
+  category,
+  location,
+  type,
+  description,
+  salary,
+  publicationDate,
+  isFavorited,
+  onFavoriteClick,
+}: JobDetailsProps) {
   const router = useRouter()
-  const { userId } = useUser()
-  const [job, setJob] = useState<Job | null>(null)
-  const [isFavorited, setIsFavorited] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-
-  const loadJob = useCallback(async () => {
+  const translatedJobType = translateJobType(type)
+  const formattedDate = useMemo(() => {
     try {
-      setIsLoading(true)
-      setError(null)
-      const response = await api.get(`/job/${id}`)
-      setJob(response.data)
-    } catch (error) {
-      setError("Failed to load job details")
-      console.error("Error loading job:", error)
-      toast.error("Failed to load job details")
-    } finally {
-      setIsLoading(false)
-    }
-  }, [id])
-
-  const checkFavoriteStatus = useCallback(async () => {
-    if (!userId || !job) return
-
-    try {
-      const response = await api.get("/favorited-jobs")
-      const favorites = response.data
-      setIsFavorited(
-        favorites.some((fav: any) => fav.jobId === job.id.toString())
-      )
-    } catch (error) {
-      console.error("Error checking favorite status:", error)
-    }
-  }, [userId, job])
-
-  const toggleFavorite = async () => {
-    if (!job) return
-
-    try {
-      const response = await api.post("/favorited-jobs/toggle", {
-        jobId: job.id.toString(),
+      // Primeiro limpa a data removendo qualquer parte de timezone ou milissegundos
+      const cleanDate = publicationDate.split("T")[0]
+      const date = parseISO(cleanDate)
+      return format(date, "dd 'de' MMMM 'de' yyyy", {
+        locale: ptBR,
       })
-      setIsFavorited(response.data.favorited)
-      toast.success(
-        response.data.favorited
-          ? `Added ${job.title} to favorites`
-          : `Removed ${job.title} from favorites`
-      )
     } catch (error) {
-      console.error("Error toggling favorite:", error)
-      toast.error("Failed to update favorite status")
+      console.error("Error formatting date:", error, publicationDate)
+      return publicationDate
     }
-  }
-
-  useEffect(() => {
-    loadJob()
-  }, [loadJob])
-
-  useEffect(() => {
-    checkFavoriteStatus()
-  }, [checkFavoriteStatus])
-
-  if (isLoading) {
-    return <JobSkeleton />
-  }
-
-  if (error || !job) {
-    return (
-      <Card className="p-6">
-        <div
-          className="text-center space-y-4"
-          role="alert"
-          aria-label="Error loading job"
-        >
-          <h2 className="text-lg font-semibold text-destructive">
-            {error || "Job not found"}
-          </h2>
-          <Button
-            variant="outline"
-            onClick={() => router.back()}
-            className="gap-2"
-            aria-label="Go back to previous page"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back
-          </Button>
-        </div>
-      </Card>
-    )
-  }
+  }, [publicationDate])
 
   return (
-    <PageTransition>
-      <article className="space-y-6">
-        <header className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl sm:text-2xl font-bold">{job.title}</h1>
-            <p
-              className="text-base sm:text-lg text-muted-foreground"
-              aria-label="Company name"
-            >
-              {job.company_name}
-            </p>
-          </div>
-          <div className="flex gap-2 self-start">
-            <ShareButton
-              title={job.title}
-              url={typeof window !== "undefined" ? window.location.href : ""}
-            />
-            {userId && (
+    <div className="container mx-auto flex gap-16 relative min-h-[calc(100vh-6rem)]">
+      {/* Primeira parte - Informações principais (Fixa) */}
+      <div className="w-[400px] flex-shrink-0">
+        <div className="fixed w-[400px]">
+          {/* Botão Voltar */}
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => router.back()}
+            className="bg-green-400 hover:bg-green-500 transition-colors duration-200 cursor-pointer"
+            aria-label="Voltar para vagas"
+          >
+            <ArrowLeft className="h-4 w-4 text-black" />
+          </Button>
+
+          <div className="mt-24">
+            {/* Ações no topo */}
+            <div className="absolute top-16 right-0 flex items-center gap-3">
               <Button
                 variant={isFavorited ? "default" : "outline"}
-                onClick={toggleFavorite}
+                size="icon"
+                className="h-11 w-11 shrink-0"
+                onClick={onFavoriteClick}
                 aria-label={
                   isFavorited
-                    ? `Remove ${job.title} from favorites`
-                    : `Add ${job.title} to favorites`
+                    ? "Remover dos favoritos"
+                    : "Adicionar aos favoritos"
                 }
                 aria-pressed={isFavorited}
-                className="whitespace-nowrap"
               >
-                {isFavorited ? "Unfavorite" : "Favorite"}
+                <Heart
+                  className={`h-5 w-5 ${
+                    isFavorited ? "fill-current text-red-500" : ""
+                  }`}
+                  aria-hidden="true"
+                />
               </Button>
-            )}
+              <ShareButton className="h-11 w-11 shrink-0 text-green-400 hover:text-green-500 border-green-400 hover:border-green-500 cursor-pointer" />
+            </div>
+
+            {/* Logo da empresa */}
+            <div className="relative w-32 h-32 mx-auto">
+              <div className="w-full h-full rounded-xl bg-muted overflow-hidden">
+                {companyLogo ? (
+                  <Image
+                    src={companyLogo}
+                    alt={`${companyName} logo`}
+                    fill
+                    className="object-contain bg-white p-2 select-none rounded-xl"
+                    draggable="false"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-muted-foreground">
+                    <Building2 className="w-20 h-20 p-4" />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Nome da empresa */}
+            <div className="text-center mt-4">
+              <h2 className="text-2xl font-bold">{companyName}</h2>
+            </div>
+
+            {/* Título da vaga */}
+            <div className="mt-8">
+              <h1 className="text-3xl font-bold">{title}</h1>
+            </div>
+
+            {/* Informações adicionais */}
+            <div className="space-y-2 mt-6">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MapPin className="h-5 w-5 shrink-0" />
+                <span className="truncate">{location}</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Timer className="h-5 w-5 shrink-0" />
+                <span className="truncate">{translatedJobType}</span>
+              </div>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Calendar className="h-5 w-5 shrink-0" />
+                <span className="truncate">{formattedDate}</span>
+              </div>
+            </div>
+
+            {/* Botão de ação */}
+            <div className="flex items-center pt-6">
+              <Button
+                size="lg"
+                className="flex-1 bg-green-400 hover:bg-green-500 text-black font-semibold transition-colors duration-200 cursor-pointer"
+                onClick={() => window.open(window.location.href, "_blank")}
+              >
+                Candidatar-se
+              </Button>
+            </div>
           </div>
-        </header>
-
-        <div
-          className="flex flex-wrap gap-2"
-          role="list"
-          aria-label="Job details"
-        >
-          <Badge
-            variant="outline"
-            role="listitem"
-            aria-label={`Category: ${job.category}`}
-            className="text-xs sm:text-sm"
-          >
-            {job.category}
-          </Badge>
-          <Badge
-            variant="secondary"
-            role="listitem"
-            aria-label={`Location: ${job.candidate_required_location}`}
-            className="text-xs sm:text-sm"
-          >
-            {job.candidate_required_location}
-          </Badge>
-          <Badge
-            role="listitem"
-            aria-label={`Job type: ${job.job_type}`}
-            className="text-xs sm:text-sm"
-          >
-            {job.job_type}
-          </Badge>
-          {job.salary && (
-            <Badge
-              variant="outline"
-              role="listitem"
-              aria-label={`Salary: ${job.salary}`}
-              className="text-xs sm:text-sm"
-            >
-              {job.salary}
-            </Badge>
-          )}
         </div>
+      </div>
 
-        {job.company_logo && (
-          <div className="flex justify-center py-4" aria-label="Company logo">
-            <img
-              src={job.company_logo}
-              alt={`${job.company_name} logo`}
-              className="max-h-16 sm:max-h-24 object-contain"
-            />
-          </div>
-        )}
-
-        <div
-          className="prose prose-sm sm:prose-base prose-zinc dark:prose-invert max-w-none"
-          role="region"
-          aria-label="Job description"
-        >
-          <div dangerouslySetInnerHTML={{ __html: job.description }} />
+      {/* Segunda parte - Descrição (Scrollável) */}
+      <div className="flex-1 py-8">
+        <div className="max-w-3xl">
+          <div
+            className="prose prose-lg dark:prose-invert 
+              prose-p:text-foreground prose-p:!text-inherit
+              prose-li:text-foreground prose-li:!text-inherit
+              prose-strong:text-foreground prose-strong:!text-inherit
+              prose-em:text-foreground prose-em:!text-inherit
+              prose-headings:text-foreground prose-headings:!text-inherit
+              prose-a:text-foreground prose-a:!text-inherit
+              prose-code:text-foreground prose-code:!text-inherit
+              prose-pre:text-foreground prose-pre:!text-inherit
+              prose-blockquote:text-foreground prose-blockquote:!text-inherit
+              prose-figure:text-foreground prose-figure:!text-inherit
+              prose-figcaption:text-foreground prose-figcaption:!text-inherit
+              prose-table:text-foreground prose-table:!text-inherit
+              prose-th:text-foreground prose-th:!text-inherit
+              prose-td:text-foreground prose-td:!text-inherit
+              [&_*]:!text-inherit [&_*]:!important
+              [&_span]:!text-inherit [&_div]:!text-inherit
+              [&_*]:![background-color:transparent]"
+            dangerouslySetInnerHTML={{ __html: description }}
+          />
         </div>
-
-        <div className="flex flex-col-reverse sm:flex-row justify-between items-center gap-4 pt-4">
-          <Button
-            variant="outline"
-            onClick={() => router.back()}
-            className="w-full sm:w-auto gap-2"
-            aria-label="Go back to previous page"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
-            Back
-          </Button>
-          <Button
-            asChild
-            className="w-full sm:w-auto"
-            aria-label={`Apply for ${job.title} position at ${job.company_name}`}
-          >
-            <a href={job.url} target="_blank" rel="noopener noreferrer">
-              Apply Now
-            </a>
-          </Button>
-        </div>
-      </article>
-    </PageTransition>
+      </div>
+    </div>
   )
 }

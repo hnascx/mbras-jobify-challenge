@@ -1,48 +1,54 @@
 "use client"
 
-import { Card } from "@/components/ui/card"
-
 export function JobSkeleton() {
   return (
-    <Card className="p-6 animate-pulse">
-      {/* Header */}
-      <div className="flex items-start justify-between gap-4 mb-6">
-        <div className="space-y-2 flex-1">
-          <div className="h-8 bg-muted rounded-md w-3/4"></div>
-          <div className="h-5 bg-muted rounded-md w-1/2"></div>
+    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: 9 }).map((_, i) => (
+        <div
+          key={i}
+          className="rounded-xl border p-6 flex flex-col h-full hover:shadow-lg transition-shadow bg-card"
+        >
+          <div className="flex-1 space-y-4">
+            {/* Primeira linha: Logo, empresa, localização e favorito */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                {/* Logo */}
+                <div className="w-12 h-12 rounded-lg bg-zinc-200 dark:bg-zinc-800 animate-pulse shrink-0" />
+
+                <div className="min-w-0 flex-1">
+                  {/* Nome da empresa */}
+                  <div className="h-5 w-40 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+
+                  {/* Localização */}
+                  <div className="mt-2 flex items-center gap-1">
+                    <div className="h-3 w-3 rounded-full bg-zinc-200 dark:bg-zinc-800 animate-pulse shrink-0" />
+                    <div className="h-4 w-32 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Botão de favoritar */}
+              <div className="h-9 w-9 rounded-md bg-zinc-200 dark:bg-zinc-800 animate-pulse shrink-0 ml-2" />
+            </div>
+
+            {/* Título e Detalhes */}
+            <div className="space-y-4">
+              {/* Título */}
+              <div className="h-6 w-[85%] bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+
+              {/* Preview da descrição */}
+              <div className="space-y-1">
+                <div className="h-4 w-full bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+                <div className="h-4 w-full bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+                <div className="h-4 w-[90%] bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+              </div>
+
+              {/* Categoria */}
+              <div className="h-6 w-24 bg-zinc-200 dark:bg-zinc-800 rounded animate-pulse" />
+            </div>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <div className="h-10 w-10 bg-muted rounded-md"></div>
-          <div className="h-10 w-10 bg-muted rounded-md"></div>
-        </div>
-      </div>
-
-      {/* Badges */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        <div className="h-6 w-24 bg-muted rounded-full"></div>
-        <div className="h-6 w-32 bg-muted rounded-full"></div>
-        <div className="h-6 w-20 bg-muted rounded-full"></div>
-      </div>
-
-      {/* Company Logo */}
-      <div className="flex justify-center py-8 mb-6">
-        <div className="h-16 w-32 bg-muted rounded-md"></div>
-      </div>
-
-      {/* Description */}
-      <div className="space-y-3 mb-6">
-        <div className="h-4 bg-muted rounded w-full"></div>
-        <div className="h-4 bg-muted rounded w-full"></div>
-        <div className="h-4 bg-muted rounded w-5/6"></div>
-        <div className="h-4 bg-muted rounded w-full"></div>
-        <div className="h-4 bg-muted rounded w-4/5"></div>
-      </div>
-
-      {/* Action Buttons */}
-      <div className="flex justify-between items-center pt-4">
-        <div className="h-10 w-24 bg-muted rounded-md"></div>
-        <div className="h-10 w-28 bg-muted rounded-md"></div>
-      </div>
-    </Card>
+      ))}
+    </div>
   )
 }
