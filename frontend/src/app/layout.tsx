@@ -23,7 +23,7 @@ export default function RootLayout({
           <UserProvider>
             <div className="min-h-screen flex flex-col">
               <Header />
-              <main className="flex-1 container mx-auto px-10 py-8">
+              <main className="flex-1 container mx-auto px-6 md:px-10 py-8">
                 {children}
               </main>
             </div>

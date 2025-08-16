@@ -10,7 +10,7 @@ export function CompanyInfo({ companyName, companyLogo }: CompanyInfoProps) {
   return (
     <>
       {/* Logo da empresa */}
-      <div className="relative w-32 h-32 mx-auto">
+      <div className="relative w-20 h-20 md:w-32 md:h-32 mx-auto">
         <div className="w-full h-full rounded-xl bg-muted overflow-hidden">
           {companyLogo ? (
             <Image
@@ -22,7 +22,7 @@ export function CompanyInfo({ companyName, companyLogo }: CompanyInfoProps) {
             />
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <Building2 className="w-20 h-20 p-4" />
+              <Building2 className="w-20 h-20 p-1" />
             </div>
           )}
         </div>
@@ -30,7 +30,7 @@ export function CompanyInfo({ companyName, companyLogo }: CompanyInfoProps) {
 
       {/* Nome da empresa */}
       <div className="text-center mt-4">
-        <h2 className="text-2xl font-bold">{companyName}</h2>
+        <h2 className="text-lg md:text-2xl font-bold">{companyName}</h2>
       </div>
     </>
   )

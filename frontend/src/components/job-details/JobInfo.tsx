@@ -34,12 +34,12 @@ export function JobInfo({
   return (
     <>
       {/* Título da vaga */}
-      <div className="mt-8">
-        <h1 className="text-3xl font-bold">{title}</h1>
+      <div className="mt-4 md:mt-8">
+        <h1 className="text-xl md:text-3xl font-bold">{title}</h1>
       </div>
 
       {/* Informações adicionais */}
-      <div className="space-y-2 mt-6">
+      <div className="space-y-2 mt-4 md:mt-6">
         <div className="flex items-center gap-2 text-muted-foreground">
           <MapPin className="h-5 w-5 shrink-0" />
           <span className="truncate">{location}</span>

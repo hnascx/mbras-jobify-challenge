@@ -27,8 +27,8 @@ export function Pagination({
   const endItem = Math.min(currentPage * itemsPerPage, totalItems)
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 py-4">
-      <div className="text-sm text-muted-foreground">
+    <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-4">
+      <div className="hidden md:block text-sm text-muted-foreground opacity-40">
         Exibindo{" "}
         <span className="font-medium text-foreground">
           vagas de {startItem} a {endItem}
@@ -58,7 +58,7 @@ export function Pagination({
           >
             <ChevronLeft className="h-4 w-4 text-green-400 hover:text-green-500 transition-colors duration-200" />
           </Button>
-          <span className="text-sm">
+          <span className="text-xs md:text-sm">
             Página {currentPage} de {totalPages}
           </span>
           <Button
@@ -80,6 +80,16 @@ export function Pagination({
             <ChevronsRight className="h-4 w-4 text-green-400 hover:text-green-500 transition-colors duration-200" />
           </Button>
         </div>
+      </div>
+
+      <div className="block md:hidden text-xs text-muted-foreground opacity-40">
+        Exibindo{" "}
+        <span className="font-medium text-foreground">
+          vagas de {startItem} a {endItem}
+        </span>{" "}
+        <span className="font-medium text-foreground">
+          ({totalItems} resultados)
+        </span>{" "}
       </div>
     </div>
   )

@@ -24,22 +24,27 @@ export function Header() {
         isScrolled && "shadow-sm"
       )}
     >
-      <div className="container mx-auto px-10 py-6 flex items-center justify-between">
-        <Link href="/" className="text-3xl font-bold text-green-400">
-          Jobify<span className="text-sm text-green-400">®</span>
-        </Link>
+      <div className="container mx-auto px-6 md:px-10 py-6 flex items-center justify-between">
+        <div>
+          <Link
+            href="/"
+            className="text-lg md:text-2xl font-bold text-green-400"
+          >
+            Jobify<span className="text-sm text-green-400">®</span>
+          </Link>
+        </div>
 
         <nav>
-          <ul className="flex items-center gap-4">
+          <ul className="flex items-center md:gap-4">
             <li>
-              <Button variant="link" asChild>
+              <Button variant="link" asChild className="text-xs md:text-sm">
                 <Link href="/">Vagas</Link>
               </Button>
             </li>
             <li>
               <Button
                 variant="outline"
-                className="text-green-400 border-green-400 hover:text-green-500 hover:border-green-500"
+                className="text-xs md:text-sm text-green-400 border-green-400 hover:text-green-500 hover:border-green-500"
                 asChild
               >
                 <Link href="/favorited-jobs">Vagas Favoritadas</Link>

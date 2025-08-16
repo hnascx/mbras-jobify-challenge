@@ -24,7 +24,7 @@ export function ShareDialog({
   onLinkedIn,
 }: ShareDialogProps) {
   return (
-    <DialogContent className="bg-zinc-50 dark:bg-zinc-950 backdrop-blur-0">
+    <DialogContent className="w-[85%] rounded-lg md:w-full bg-black backdrop-blur-0">
       <DialogHeader>
         <DialogTitle>Compartilhar vaga</DialogTitle>
         <DialogDescription className="mt-2">
@@ -36,7 +36,7 @@ export function ShareDialog({
           <Input
             value={window.location.href}
             readOnly
-            className="flex-1 focus-visible:ring-1"
+            className="flex-1 focus-visible:ring-1 text-xs md:text-base"
             aria-label="URL da vaga"
           />
           <Button

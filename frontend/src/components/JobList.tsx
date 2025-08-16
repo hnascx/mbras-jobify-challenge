@@ -50,7 +50,7 @@ export function JobList({
 
   return (
     <div
-      className="grid gap-4 md:grid-cols-2 lg:grid-cols-3"
+      className="grid gap-4 justify-center items-center grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
       role="feed"
       aria-label="Lista de vagas"
       aria-busy={isLoading}

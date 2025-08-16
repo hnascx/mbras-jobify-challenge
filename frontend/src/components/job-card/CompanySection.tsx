@@ -34,7 +34,7 @@ export function CompanySection({
               draggable="false"
             />
           ) : (
-            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-lg font-medium">
+            <div className="w-full h-full flex items-center justify-center text-muted-foreground text-lg font-medium border-1">
               <Building2
                 className="w-12 h-12 p-3 border-1 rounded-lg"
                 aria-hidden="true"
@@ -57,11 +57,11 @@ export function CompanySection({
           <MapPin className="h-3 w-3 shrink-0" aria-hidden="true" />
           <Link
             href={`/job/${id}`}
-            className="inline-block"
+            className="inline-block max-w-[85%]"
             aria-label={`Ver detalhes da localização: ${location}`}
           >
             <span
-              className="truncate hover:text-gray-300 transition-colors duration-200"
+              className="truncate hover:text-gray-300 transition-colors duration-200 block"
               title={location}
             >
               {locationPreview}

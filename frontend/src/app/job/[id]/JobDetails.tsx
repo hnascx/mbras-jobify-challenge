@@ -39,10 +39,10 @@ export function JobDetails({
   const router = useRouter()
 
   return (
-    <div className="container mx-auto flex gap-16 relative min-h-[calc(100vh-6rem)]">
+    <div className="container mx-auto flex flex-col md:flex-row gap-16 relative min-h-[calc(100vh-6rem)]">
       {/* Primeira parte - Informações principais (Fixa) */}
-      <div className="w-[400px] flex-shrink-0">
-        <div className="fixed w-[400px]">
+      <div className="md:w-[400px] flex-shrink-0">
+        <div className="md:fixed md:w-[400px]">
           {/* Botão Voltar */}
           <Button
             variant="outline"
@@ -54,7 +54,7 @@ export function JobDetails({
             <ArrowLeft className="h-4 w-4 text-black" />
           </Button>
 
-          <div className="mt-24">
+          <div className="mt-20 mb-6 md:mb-0 md:mt-24">
             <JobActions
               title={title}
               isFavorited={isFavorited}
@@ -74,7 +74,8 @@ export function JobDetails({
             <div className="flex items-center pt-6">
               <Button
                 size="lg"
-                className="flex-1 bg-green-400 hover:bg-green-500 text-black font-semibold transition-colors duration-200 cursor-pointer"
+                variant="outline"
+                className="flex-1 border-green-400 hover:border-green-500 text-green-400 hover:text-green-500 font-semibold transition-colors duration-200 cursor-pointer"
                 onClick={() =>
                   window.open(url, "_blank", "noopener,noreferrer")
                 }

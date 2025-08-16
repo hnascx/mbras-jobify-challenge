@@ -61,7 +61,6 @@ export default function Home() {
             itemsPerPage={itemsPerPage}
             totalItems={data?.totalJobs || 0}
             onPageChange={handlePageChange}
-            onItemsPerPageChange={() => {}} // Não permitimos mais mudar o número de itens por página
           />
         </nav>
       ) : null}

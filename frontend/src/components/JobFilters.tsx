@@ -49,7 +49,7 @@ export function JobFilters({
     >
       <Input
         placeholder="Buscar vagas..."
-        className="flex-1 focus-visible:ring-1"
+        className="flex-1 focus-visible:ring-1 text-sm py-2 md:py-0"
         value={search}
         onChange={(e) => onSearchChange(e.target.value)}
         type="search"
@@ -63,8 +63,12 @@ export function JobFilters({
         aria-label="Filtrar por categoria"
         disabled={isLoading}
       >
-        <SelectTrigger className="cursor-pointer">
-          <SelectValue />
+        <SelectTrigger className="cursor-pointer focus-visible:ring-1 w-full md:w-fit">
+          <SelectValue>
+            {category === "all"
+              ? "Todas as categorias"
+              : categoryOptions.find((opt) => opt.value === category)?.label}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent>
           {categoryOptions.map((option) => (
