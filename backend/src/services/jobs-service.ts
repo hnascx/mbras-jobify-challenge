@@ -26,7 +26,6 @@ export class JobsService {
 
       let jobs = parsedData.data.jobs
 
-      // Apply filters
       if (params.category && params.category !== "all") {
         const categoryMap: { [key: string]: string } = {
           software_development: "Software Development",
@@ -60,7 +59,6 @@ export class JobsService {
         )
       }
 
-      // Apply pagination
       const page = params.page || 1
       const limit = params.limit || 20
       const start = (page - 1) * limit

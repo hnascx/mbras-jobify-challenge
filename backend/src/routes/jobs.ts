@@ -5,11 +5,9 @@ import { userIdMiddleware } from "../middlewares/user-id"
 export async function jobRoutes(app: FastifyInstance) {
   const jobsController = new JobsController()
 
-  // Public routes
   app.get("/jobs", jobsController.findAll.bind(jobsController))
   app.get("/job/:id", jobsController.findById.bind(jobsController))
 
-  // Protected routes (require user ID)
   app.register(async function (protectedRoutes) {
     protectedRoutes.addHook("preHandler", userIdMiddleware)
 

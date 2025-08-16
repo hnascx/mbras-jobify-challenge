@@ -23,7 +23,7 @@ async function start() {
       host: "0.0.0.0",
     })
     console.log(
-      `🚀 HTTP server running on http://localhost:${process.env.PORT || 3001}`
+      `🚀 Servidor rodando em http://localhost:${process.env.PORT || 3001}`
     )
   } catch (err) {
     app.log.error(err)

@@ -4,7 +4,7 @@ import { z } from "zod"
 export const jobIdParamSchema = z.object({
   id: z
     .string()
-    .regex(/^\d+$/, "ID must be a numeric value")
+    .regex(/^\d+$/, "O ID da vaga deve ser um valor alfanumérico")
     .transform((val) => parseInt(val, 10)),
 })
 
@@ -15,13 +15,13 @@ export const jobsQuerySchema = z
     search: z.string().optional(),
     page: z
       .string()
-      .regex(/^\d+$/, "Page must be a numeric value")
+      .regex(/^\d+$/, "A página deve ser um valor numérico")
       .transform((val) => parseInt(val, 10))
       .optional()
       .default(1),
     limit: z
       .string()
-      .regex(/^\d+$/, "Limit must be a numeric value")
+      .regex(/^\d+$/, "O limite deve ser um valor numérico")
       .transform((val) => parseInt(val, 10))
       .optional()
       .default(20),
@@ -31,7 +31,6 @@ export const jobsQuerySchema = z
 // Request Body Validation
 export const toggleFavoriteSchema = z
   .object({
-    jobId: z.string().min(1, "Job ID is required"),
+    jobId: z.string().min(1, "O ID da vaga é obrigatório"),
   })
   .strict()
- 

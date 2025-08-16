@@ -18,7 +18,7 @@ export async function userIdMiddleware(
   request.userId = userId
 }
 
-// Extend FastifyRequest to include userId
+// Extende o FastifyRequest para incluir userId
 declare module "fastify" {
   interface FastifyRequest {
     userId: string

@@ -32,7 +32,6 @@ export class FavoritesService {
       return { isFavorited: false }
     }
 
-    // Fetch job data from the API
     const job = await this.jobsService.findById(Number(jobId))
     if (!job) {
       throw new Error("Job not found")

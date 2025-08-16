@@ -76,7 +76,7 @@ describe("JobsService", () => {
             id: 2,
             title: "Frontend Developer",
             company_name: "Web Corp",
-            category: "frontend",
+            category: "Software Development",
             url: "https://example.com/job/2",
             company_logo: "https://example.com/logo.png",
             tags: ["react"],
@@ -91,10 +91,12 @@ describe("JobsService", () => {
 
       vi.mocked(axios.get).mockResolvedValueOnce({ data: mockJobs })
 
-      const result = await jobsService.findAll({ category: "frontend" })
+      const result = await jobsService.findAll({
+        category: "software_development",
+      })
 
       expect(result.jobs).toHaveLength(1)
-      expect(result.jobs[0].category).toBe("frontend")
+      expect(result.jobs[0].category).toBe("Software Development")
     })
   })
 

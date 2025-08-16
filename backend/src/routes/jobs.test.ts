@@ -1,7 +1,7 @@
 import axios from "axios"
 import { FastifyInstance } from "fastify"
 import request from "supertest"
-import { afterAll, beforeAll, describe, expect, it } from "vitest"
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest"
 import { prisma } from "../lib/prisma"
 import { createServer } from "../server"
 
@@ -99,6 +99,7 @@ describe("Jobs Routes", () => {
             id: 1,
             title: "Software Engineer",
           },
+          createdAt: new Date(),
         },
       ]
 
@@ -148,6 +149,7 @@ describe("Jobs Routes", () => {
         userId: "user123",
         jobId: "1",
         jobData: mockJob.jobs[0],
+        createdAt: new Date(),
       })
 
       const response = await request(app.server)
@@ -156,7 +158,7 @@ describe("Jobs Routes", () => {
         .send({ jobId: "1" })
         .expect(200)
 
-      expect(response.body).toEqual({ favorited: true })
+      expect(response.body).toEqual({ isFavorited: true })
     })
 
     it("should return 401 without user id", async () => {

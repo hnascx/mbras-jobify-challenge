@@ -27,6 +27,7 @@ describe("FavoritesService", () => {
             id: 1,
             title: "Software Engineer",
           },
+          createdAt: new Date(),
         },
       ]
 
@@ -52,6 +53,7 @@ describe("FavoritesService", () => {
           id: 1,
           title: "Software Engineer",
         },
+        createdAt: new Date(),
       }
 
       vi.mocked(prisma.favoriteJob.findUnique).mockResolvedValueOnce(
@@ -63,7 +65,7 @@ describe("FavoritesService", () => {
 
       const result = await favoritesService.toggle("user123", "job123")
 
-      expect(result).toEqual({ favorited: false })
+      expect(result).toEqual({ isFavorited: false })
       expect(prisma.favoriteJob.delete).toHaveBeenCalled()
     })
 
@@ -79,11 +81,12 @@ describe("FavoritesService", () => {
         userId: "user123",
         jobId: "job123",
         jobData: mockJob,
+        createdAt: new Date(),
       })
 
       const result = await favoritesService.toggle("user123", "job123")
 
-      expect(result).toEqual({ favorited: true })
+      expect(result).toEqual({ isFavorited: true })
       expect(prisma.favoriteJob.create).toHaveBeenCalled()
     })
 
