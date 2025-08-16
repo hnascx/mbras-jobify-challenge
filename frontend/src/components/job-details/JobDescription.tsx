@@ -2,6 +2,7 @@ interface JobDescriptionProps {
   description: string
 }
 
+// Componente para exibir a descrição da vaga removendo estilizações padrão que podem vir no retorno da API, mais especificamente cores e backgrounds
 export function JobDescription({ description }: JobDescriptionProps) {
   return (
     <div className="flex-1 py-8">

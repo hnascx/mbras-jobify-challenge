@@ -40,10 +40,8 @@ export function JobDetails({
 
   return (
     <div className="container mx-auto flex flex-col md:flex-row gap-16 relative min-h-[calc(100vh-6rem)]">
-      {/* Primeira parte - Informações principais (Fixa) */}
       <div className="md:w-[400px] flex-shrink-0">
         <div className="md:fixed md:w-[400px]">
-          {/* Botão Voltar */}
           <Button
             variant="outline"
             size="icon"
@@ -70,7 +68,6 @@ export function JobDetails({
               publicationDate={publicationDate}
             />
 
-            {/* Botão de ação */}
             <div className="flex items-center pt-6">
               <Button
                 size="lg"
@@ -87,7 +84,6 @@ export function JobDetails({
         </div>
       </div>
 
-      {/* Segunda parte - Descrição (Scrollável) */}
       <JobDescription description={description} />
     </div>
   )

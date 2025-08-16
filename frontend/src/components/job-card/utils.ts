@@ -10,6 +10,7 @@ export const stripHtml = (html: string) => {
   }
 }
 
+// Função para limpar o texto removendo tags HTML e outros caracteres especiais
 const cleanText = (text: string) => {
   return text
     .replace(/<[^>]+>/g, "")
@@ -29,6 +30,7 @@ const cleanText = (text: string) => {
     .trim()
 }
 
+// Função para truncar o texto em uma palavra específica
 export const truncateAtWord = (text: string, limit: number) => {
   if (!text) return ""
 

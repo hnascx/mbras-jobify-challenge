@@ -19,7 +19,6 @@ export const translateJobType = (jobType: string): string => {
 
 export const translateCategory = (category: string): string => {
   const categoryMap: { [key: string]: string } = {
-    // Valores exatos que vêm da API do Remotive
     "Software Development": "Desenvolvimento de Software",
     Design: "Design",
     Marketing: "Marketing",

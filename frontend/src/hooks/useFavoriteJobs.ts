@@ -39,7 +39,6 @@ export function useToggleFavorite(userId: string | null) {
       queryClient.invalidateQueries({ queryKey: ["job"] })
       queryClient.invalidateQueries({ queryKey: ["jobs"] })
 
-      // Exibe o toast apropriado
       toast.success(
         data.isFavorited
           ? "Vaga adicionada aos favoritos"

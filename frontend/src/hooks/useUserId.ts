@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid"
 
 const USER_ID_KEY = "@jobify:userId"
 
+// Hook para buscar o ID do usuário
 export function useUserId() {
   const [userId, setUserId] = useState<string | null>(null)
 

@@ -18,10 +18,10 @@ export function ShareButton({ className }: ShareButtonProps) {
   const handleCopyLink = async () => {
     try {
       await shareHandlers.copyLink()
-      toast.success("Link copiado!")
+      toast.success("Link copiado com sucesso.")
       setIsOpen(false)
     } catch (error) {
-      toast.error("Erro ao copiar link")
+      toast.error("Erro ao copiar link.")
     }
   }
 

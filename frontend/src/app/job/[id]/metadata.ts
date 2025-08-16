@@ -15,6 +15,7 @@ interface Job {
   url: string
 }
 
+// Assim como no metadata.ts do favorited-jobs, parte do conteúdo presente aqui é meramente ilustrativo, apenas para exemplificar as características de aplicação de uma estratégia básica de SEO
 export async function generateMetadata({
   params,
 }: {
@@ -24,7 +25,6 @@ export async function generateMetadata({
     const response = await api.get<Job>(`/job/${params.id}`)
     const job = response.data
 
-    // Remove HTML tags from description for meta tags
     const cleanDescription = job.description
       .replace(/<[^>]+>/g, "")
       .slice(0, 200)

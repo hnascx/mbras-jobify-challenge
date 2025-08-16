@@ -25,12 +25,10 @@ export default function FavoritedJobs() {
     await toggleFavorite.mutateAsync(jobId)
   }
 
-  // Sempre mostra loading no primeiro carregamento
   if (isLoading || !hasInitialLoad) {
     return <LoadingState />
   }
 
-  // Só mostra o estado vazio após o carregamento inicial
   if (hasInitialLoad && !favorites.length) {
     return <EmptyState />
   }

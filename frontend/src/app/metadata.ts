@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+// Parte do conteúdo presente aqui é meramente ilustrativo, apenas para exemplificar as características de aplicação de uma estratégia básica de SEO
 export const metadata: Metadata = {
   title: "Jobify - Encontre seu próximo emprego remoto",
   description: "Encontre e salve vagas de emprego remoto.",

@@ -9,6 +9,11 @@ export async function createServer() {
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
   })
 
+  // Health check endpoint para o Docker
+  app.get("/health", async (request, reply) => {
+    return { status: "ok", timestamp: new Date().toISOString() }
+  })
+
   await app.register(jobRoutes, { prefix: "/api" })
 
   return app

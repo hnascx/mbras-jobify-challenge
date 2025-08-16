@@ -1,5 +1,6 @@
 import { Metadata } from "next"
 
+// Parte do conteúdo presente aqui é meramente ilustrativo, apenas para exemplificar as características de aplicação de uma estratégia básica de SEO
 export const metadata: Metadata = {
   title: "Vagas Favoritadas | Jobify",
   description:

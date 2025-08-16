@@ -20,6 +20,7 @@ export default function Home() {
   const [currentPage, setCurrentPage] = useState(1)
   const itemsPerPage = 20
 
+  // Debounce para evitar requisições excessivas ao digitar
   const debouncedSearch = useDebounce(search)
 
   const { data, isLoading } = useJobs(currentPage, category, debouncedSearch)

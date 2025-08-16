@@ -17,7 +17,6 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Tipos para as respostas da API
 export interface Job {
   id: number
   title: string
@@ -35,7 +34,6 @@ export interface JobsResponse {
   totalPages: number
 }
 
-// Funções de API
 export const jobsApi = {
   list: async (params?: {
     category?: string

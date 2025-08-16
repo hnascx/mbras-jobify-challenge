@@ -9,6 +9,7 @@ interface UserContextType {
 
 const UserContext = createContext<UserContextType | undefined>(undefined)
 
+// Contexto para armazenar o ID do usuário
 export function UserProvider({ children }: { children: ReactNode }) {
   const userId = useUserId()
 

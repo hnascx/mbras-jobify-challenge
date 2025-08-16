@@ -42,7 +42,7 @@ export function JobList({
     return (
       <div className="text-center py-8" role="status" aria-live="polite">
         <p className="text-lg text-muted-foreground">
-          Nenhuma vaga encontrada. Tente ajustar sua busca ou filtros.
+          :( Nenhuma vaga encontrada. Tente ajustar sua busca ou filtros.
         </p>
       </div>
     )

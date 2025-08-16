@@ -9,7 +9,7 @@ CMD ["pnpm", "run", "dev"]
 
 FROM node:20-alpine AS backend
 WORKDIR /app/backend
-RUN npm install -g pnpm
+RUN npm install -g pnpm tsx
 COPY backend/package*.json ./
 RUN pnpm install
 COPY backend/ .
